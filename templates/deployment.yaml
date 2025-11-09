@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "german-currency.resource-name" . }}
+  labels:
+    {{ include "german-currency.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{ include "german-currency.selector" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{ include "german-currency.selector" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Values.appLabel }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: {{ (index .Values.containerPorts 0).port }}
+        {{ include "german-currency.liveness" . | nindent 8 }}
+        {{ include "german-currency.readiness" . | nindent 8 }}

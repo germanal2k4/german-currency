@@ -1,0 +1,50 @@
+# Default values for german-currency.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+
+image:
+  repository: aadan1lov/muffin-currency
+  tag: "1.0.0"
+
+appLabel: "german-currency"
+
+containerPorts:
+  - port: 8080
+    protocol: TCP
+    name: http
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /rate?from=PLAIN&to=CHOKOLATE
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /rate?from=PLAIN&to=CHOKOLATE
+    port: 8080
+  initialDelaySeconds: 2
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+service:
+  type: ClusterIP
+  port: 8083
+  targetPort: 8080
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8080
+      name: http
+
+
