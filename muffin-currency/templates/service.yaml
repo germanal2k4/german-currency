@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "german-currency.resource-name" . }}
+  name: {{ include "muffin-currency.resource-name" . }}
   labels:
-    {{ include "german-currency.labels" . | nindent 4 }}
+    {{ include "muffin-currency.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -11,4 +11,4 @@ spec:
       port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
   selector:
-    {{ include "german-currency.selector" . | nindent 4 }}
+    {{ include "muffin-currency.selector" . | nindent 4 }}

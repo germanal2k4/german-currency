@@ -1,0 +1,17 @@
+repositories: []
+
+releases:
+  - name: muffin-currency
+    namespace: default
+    chart: ./muffin-currency
+    values:
+      - muffin-currency/values.yaml
+
+  - name: muffin-wallet
+    namespace: default
+    chart: ./muffin-wallet
+    needs:
+      - default/muffin-currency
+    values:
+      - muffin-wallet/values.yaml
+

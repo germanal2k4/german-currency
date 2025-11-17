@@ -1,35 +1,35 @@
 {{/*
 Release name
 */}}
-{{- define "german-currency.release-name" -}}
+{{- define "muffin-currency.release-name" -}}
 {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Resource name
 */}}
-{{- define "german-currency.resource-name" -}}
+{{- define "muffin-currency.resource-name" -}}
 {{- .Release.Name }}-{{ .Values.appLabel -}}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
-{{- define "german-currency.selector" -}}
+{{- define "muffin-currency.selector" -}}
 app: {{ .Values.appLabel }}
 {{- end }}
 
 {{/*
 Resource labels
 */}}
-{{- define "german-currency.labels" -}}
+{{- define "muffin-currency.labels" -}}
 app: {{ .Values.appLabel }}
 {{- end }}
 
 {{/*
 Liveness probe template
 */}}
-{{- define "german-currency.liveness" -}}
+{{- define "muffin-currency.liveness" -}}
 livenessProbe:
   httpGet:
     path: {{ .Values.livenessProbe.httpGet.path }}
@@ -41,7 +41,7 @@ livenessProbe:
 {{/*
 Readiness probe template
 */}}
-{{- define "german-currency.readiness" -}}
+{{- define "muffin-currency.readiness" -}}
 readinessProbe:
   httpGet:
     path: {{ .Values.readinessProbe.httpGet.path }}
