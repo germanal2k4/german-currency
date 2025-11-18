@@ -26,12 +26,18 @@ envFrom:
     - muffin-wallet-env
 
 livenessProbe:
-  path: /actuator/health/liveness
+  enabled: true
+  httpGet:
+    path: /actuator/health/liveness
+    port: 8081
   initialDelaySeconds: 30
   periodSeconds: 5
 
 readinessProbe:
-  path: /actuator/health/readiness
+  enabled: true
+  httpGet:
+    path: /actuator/health/readiness
+    port: 8081
   initialDelaySeconds: 5
   periodSeconds: 10
 
@@ -74,4 +80,3 @@ ingress:
   className: nginx
   host: muffin-wallet.com
   path: /
-

@@ -14,43 +14,27 @@ spec:
       labels:
         {{ include "muffin-wallet.selector" . | nindent 8 }}
     spec:
-      containers:
-        - name: {{ .Values.appLabel }}
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - containerPort: {{ .Values.containerPort }}
-          {{- if .Values.volume }}
-          volumeMounts:
-            - name: {{ .Values.volume.name }}
-              mountPath: {{ .Values.volume.mountPath }}
-          {{- end }}
-          {{- if or (.Values.envFrom.secrets) (.Values.envFrom.configMaps) }}
-          envFrom:
-            {{- range .Values.envFrom.secrets }}
-            - secretRef:
-                name: {{ . }}
-            {{- end }}
-            {{- range .Values.envFrom.configMaps }}
-            - configMapRef:
-                name: {{ . }}
-            {{- end }}
-          {{- end }}
-          livenessProbe:
-            httpGet:
-              path: {{ .Values.livenessProbe.path }}
-              port: {{ .Values.containerPort }}
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-          readinessProbe:
-            httpGet:
-              path: {{ .Values.readinessProbe.path }}
-              port: {{ .Values.containerPort }}
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-      {{- if .Values.volume }}
       volumes:
         - name: {{ .Values.volume.name }}
           configMap:
             name: {{ .Values.volume.configMapName }}
-      {{- end }}
+      containers:
+      - name: {{ .Values.appLabel }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.containerPort }}
+        volumeMounts:
+          - name: {{ .Values.volume.name }}
+            mountPath: {{ .Values.volume.mountPath }}
+        envFrom:
+          {{- range .Values.envFrom.secrets }}
+          - secretRef:
+              name: {{ . }}
+          {{- end }}
+          {{- range .Values.envFrom.configMaps }}
+          - configMapRef:
+              name: {{ . }}
+          {{- end }}
+        {{ include "muffin-wallet.liveness" . | nindent 8 }}
+        {{ include "muffin-wallet.readiness" . | nindent 8 }}

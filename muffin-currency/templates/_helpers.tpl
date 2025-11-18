@@ -9,7 +9,7 @@ Release name
 Resource name
 */}}
 {{- define "muffin-currency.resource-name" -}}
-{{- .Release.Name }}-{{ .Values.appLabel -}}
+{{- .Values.appLabel -}}
 {{- end }}
 
 {{/*
