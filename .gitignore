@@ -16,3 +16,9 @@ Thumbs.db
 *.tmp
 *.log
 
+# TLS certificates
+tls-certs/
+*.key
+*.crt
+*.pem
+

@@ -1,0 +1,21 @@
+{{- if .Values.authorizationPolicy.currency.enabled }}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: muffin-currency-policy
+  namespace: muffin-services
+spec:
+  selector:
+    matchLabels:
+      app: muffin-currency
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/muffin-services/sa/muffin-wallet
+      to:
+        - operation:
+            methods: ["GET", "POST"]
+            paths: ["/rate*"]
+{{- end }}

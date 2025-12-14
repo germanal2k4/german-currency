@@ -13,7 +13,9 @@ spec:
     metadata:
       labels:
         {{ include "muffin-wallet.selector" . | nindent 8 }}
+        version: {{ .Values.version | default "v1" }}
     spec:
+      serviceAccountName: {{ .Values.serviceAccount.name | default (include "muffin-wallet.resource-name" .) }}
       volumes:
         - name: {{ .Values.volume.name }}
           configMap:

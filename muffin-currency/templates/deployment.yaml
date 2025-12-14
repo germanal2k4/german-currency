@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         {{ include "muffin-currency.selector" . | nindent 8 }}
+        version: {{ .Values.version | default "v1" }}
     spec:
       containers:
       - name: {{ .Values.appLabel }}

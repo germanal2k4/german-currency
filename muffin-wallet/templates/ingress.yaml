@@ -11,6 +11,12 @@ metadata:
   {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ include "muffin-wallet.resource-name" . }}-tls
+  {{- end }}
   rules:
     - host: {{ .Values.ingress.host }}
       http:

@@ -1,6 +1,11 @@
-replicaCount: 3
+replicaCount: 1
 
 appLabel: muffin-wallet
+
+version: v1
+
+serviceAccount:
+  name: muffin-wallet
 
 image:
   repository: aadan1lov/muffin-wallet
@@ -30,16 +35,20 @@ livenessProbe:
   httpGet:
     path: /actuator/health/liveness
     port: 8081
-  initialDelaySeconds: 30
-  periodSeconds: 5
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
 
 readinessProbe:
   enabled: true
   httpGet:
     path: /actuator/health/readiness
     port: 8081
-  initialDelaySeconds: 5
+  initialDelaySeconds: 60
   periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
 
 secret:
   name: muffin-wallet
@@ -59,7 +68,9 @@ configMaps:
         port: 8081
       spring:
         datasource:
-          url: jdbc:postgresql://muffin-postgres:5432/muffin_wallet
+          # Для minikube используйте host.minikube.internal
+          # Для других кластеров может быть host.docker.internal или IP хоста
+          url: jdbc:postgresql://host.minikube.internal:5432/muffin_wallet
           username: muffin-wallet
       currency:
         service:
@@ -80,3 +91,14 @@ ingress:
   className: nginx
   host: muffin-wallet.com
   path: /
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  tls:
+    enabled: true
+    # Для использования cert-manager оставьте certificate и key пустыми
+    # cert-manager автоматически создаст сертификаты
+    certificate: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURGekNDQWYrZ0F3SUJBZ0lVUDNldXM2WGhibDRFUmRSTTRLRmMxUE92TnlNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd05ERWFNQmdHQTFVRUF3d1JiWFZtWm1sdUxYZGhiR3hsZEM1amIyMHhGakFVQmdOVkJBb01EVzExWm1acApiaTEzWVd4c1pYUXdIaGNOTWpVeE1qRXpNVFUxTVRBd1doY05Nall4TWpFek1UVTFNVEF3V2pBME1Sb3dHQVlEClZRUUREQkZ0ZFdabWFXNHRkMkZzYkdWMExtTnZiVEVXTUJRR0ExVUVDZ3dOYlhWbVptbHVMWGRoYkd4bGREQ0MKQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFLVzU0NVNiZUlzSGhQbDNHVTZyTTBDOApaTGllZEtCZmR3d3FQSHAxeWY0REtWd1VSWU16Z2ZqNlljVTVIV3FMd2dZd05mb1NLV3NmYy8zclFFczRvYVRDCmNxSTJKM1ErZXVxR1g5TE84RVRCTWljMGVuSWZDb1RjTUxyb0tOTW8xc1hnMk9aV1d4VDN1cnc4emJ3MjZkZGEKeDRGNksvQkFkS2FJSVBQZUFUQjNEaTM1cHAvY1JJSHpZVFE5WWh3UjBFbUNaSWZqK1RFWnozUmtiVDUzYWhGZAo2M2lMdW5zb0dEVnBsVTVMNU5seG83OU1qS05kYm9MbEZleml5eEdQV0dZeGFFTU9mUG1TRmRqL2FVSkVSeFJGCjNXUElhdUxvMFBQTWdjV1M0Tm1RNnJKUDBla0JNQkQxcUErVHI1cFZCQXg4VlIyV0RvVXg1QVBqRCtBWXd3Y0MKQXdFQUFhTWhNQjh3SFFZRFZSME9CQllFRkdsWVlYa0VGSStPRzkrZmZOek94WUI4bmRVdk1BMEdDU3FHU0liMwpEUUVCQ3dVQUE0SUJBUUJtZEVYQUcvNEZwWFlpZXVkK0YrRDZnbXF3L041MllzTXpPNnl1V2hvMjZodE5iZ3Y1ClBRa2tlc0VLWUh4NTNQbHRISm03b29mTGZhdHJRajBRMEJtRnpEUzB0R2plaVM2SGt6dmxqSjN1WXFndzJkUSsKb2Z5OXR1b0xjSXc3dXk1R3FxYzhna2tNYWd6TmZuU1FKa0czMFo3M1JsZmxWVGQ5bUVnS2dieVJDQjRwOTVNbAo3TE5pdkpvWFovNlFHck9BNFpRUGkydzhPOEh0MGl4eW4vSW90NjY1eWxqdWZKUXZuNkNJUmpJY0djSUlVOSt0CnJZSk9wWmxSZHREZ1piMEg0YUtjKytnWGIzVCsrUVBWc0oweElmaStyOFpvU3hJQmFhNGE3aHdZMWR6Si9oQWMKZkJkTExla0ZoTDJuL1RRakIwSHVVRi92VmhZOHU2TEI2aFA2Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+    key: "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2UUlCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktjd2dnU2pBZ0VBQW9JQkFRQ2x1ZU9VbTNpTEI0VDUKZHhsT3F6TkF2R1M0bm5TZ1gzY01Lang2ZGNuK0F5bGNGRVdETTRINCttSEZPUjFxaThJR01EWDZFaWxySDNQOQo2MEJMT0tHa3duS2lOaWQwUG5ycWhsL1N6dkJFd1RJbk5IcHlId3FFM0RDNjZDalRLTmJGNE5qbVZsc1U5N3E4ClBNMjhOdW5YV3NlQmVpdndRSFNtaUNEejNnRXdkdzR0K2FhZjNFU0I4MkUwUFdJY0VkQkpnbVNINC9reEdjOTAKWkcwK2Qyb1JYZXQ0aTdwN0tCZzFhWlZPUytUWmNhTy9USXlqWFc2QzVSWHM0c3NSajFobU1XaEREbno1a2hYWQovMmxDUkVjVVJkMWp5R3JpNk5EenpJSEZrdURaa09xeVQ5SHBBVEFROWFnUGs2K2FWUVFNZkZVZGxnNkZNZVFECjR3L2dHTU1IQWdNQkFBRUNnZ0VBQzJOZ082eUpWb2h3UDFKTFYyZ1ZVQXdDSWR1bHFRV1dZU3dmMXN4MFVuTzIKS21Fc082MVU3NTZKREd2MTFRWUFrYnRMWWtGUVBrKzlnVVBpdWFpTkZ3elRvc2owNGh5UEJzR3dJUVRlWnVNZAp4cXJwQlNHVDcvaFBrdkIwS2JxRE03clZQTkxQVkh3SGhYcnFLbFpkc0ZKSkptRVdWdDZmQlhpU1J4L0kxaU1qCnhHczlVTU9EU05LYmlseW0yRzVjdVNZNnpZTnpyM253YWNjaWg2U0M3VDVzeHlKcHNLYUp4ZG1RR1Y3MlJhRkoKbWNoc3Q2SUFDSVArY2ZzTk5laXBndmFyWENFenkraUhoT3B5b0MwUWtxdm83dmRRaEtjKzM3ZnMrcmlKRXJtUQpVWlp2Q1N1RUZXMCswUWI4L0JwR0g4NWZQcC9oZjIvTFFUN0J4UDJCSlFLQmdRRG03V3Z6emNUWUpJWWN2T1llClp1aWN6Y3h6ekg5RmRtSDlTVy91SGliSEdZSDlPOGczV0ZVUkdSaXZxZ2VNZm1CdmZCYlBVMjcyaDNGdExEOUoKSFRaNHpBUkp0YjEvVEN6NmhhOVRwZVQ1ZldGN3lRRnYzTjhVYnJobDV5RUVDMlhZUWlYemNWWWh3Y3V6UzNubQpBM21wMUFzVTAyM0ZzT0hjd3JDMUY5SVJrd0tCZ1FDM3VEWVBJdUNtbFUrd0JKNE5nR1cwRi9xNW9yeVozbjZrCk9aYi9mb0VYdmJjbW43Z3VoT1dYaCtkbGJxaXlRQmROUlN0c0UvS3h0UVVLcXp5aTVmRzd1ZUtpYWllRzVPS2YKdUVWV29sU0VVVUlqL2ZVR2tKeEFnK1Z0bW0zbEpZOGxCSXJQZ3V1bFBDLy9DaFp1MU9OYXlNeTJHYmZ6MUJqWgpoVnBReXNNQlBRS0JnUUNiSUpqcFFheGZLa0h4WWpBUDhqK0d2blQrd1R3cDlIbWxCY1VzSjVNVElwNkE5N3pxCitPckVQcUNudU1lemFGM3Q1bVVJUjFyK1AwUkIrM3hUNkV6a1h1RHVoeWpTTCtEek5nVHVZejNySDMveUFMaDMKWmQ5eHdXTWNDV1RUYTdpeHl0WGxzSmdVdXpQVXNQb2xPdVpxNEdmRlNMYXdHNy9PWmZjQTRBeWRBd0tCZ0NIVApGcERlMlFHU2grTmVWa01pR3BkM3VyK215SmFEc2tsR0dSamRENk54V0dFU0V2VHRudCt4TTljbThvUXU3SnRiCldzMUJOdk9rNGxLK2lDRnR1SDNaa1hKWm5RRm03cHA5Y0xhc21HYnNGd05OWkdsYkFvbVdQdzFZMjFiTy9YWFIKU2tVK1UyaE9sbitjT2RrWjlPbm9BbGljajVPaXZ4aDlSczJOSnkzNUFvR0FCU1ZyM0dQV2dseGh4em0rRlhPKwpOR3NSQW1LOUFydjB0Z3FEL0Ivc2IwcytWVWVrYWJJd0FZd1NWeGtlWUR4S3EzcUhnSTc1V2ExMHIySnQ0am16CkdPc1FqTGpEVTFjVXhxaTdwUTNsdDFxZDFwbEtrNC9HbjU0RlBUSUk5NzUzdXFWa1ZORnVpblhHY2JEbkRNWWsKRElEUldMUnp0aEx3UmJISHFJbWUyRjQ9Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K"
+    # Альтернативно, можно использовать самоподписанные сертификаты:
+    # certificate: ""  # base64 encoded certificate
+    # key: ""  # base64 encoded private key

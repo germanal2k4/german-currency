@@ -1,5 +1,7 @@
 # Values for muffin-currency chart
-replicaCount: 2
+replicaCount: 1
+
+version: v1
 
 image:
   repository: aadan1lov/muffin-currency

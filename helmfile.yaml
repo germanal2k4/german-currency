@@ -1,17 +1,82 @@
-repositories: []
+repositories:
+  - name: istio
+    url: https://istio-release.storage.googleapis.com/charts
+  # Prometheus репозиторий оставлен для ручной установки
+  # - name: prometheus-community
+  #   url: https://prometheus-community.github.io/helm-charts
+  - name: kiali
+    url: https://kiali.org/helm-charts
 
 releases:
+  - name: istio-base
+    namespace: istio-system
+    createNamespace: true
+    chart: istio/base
+    version: 1.20.0
+    wait: true
+
+  - name: istiod
+    namespace: istio-system
+    chart: istio/istiod
+    version: 1.20.0
+    needs:
+      - istio-system/istio-base
+    wait: true
+    values:
+      - istio/istiod-values.yaml
+
+  - name: istio-ingress
+    namespace: istio-system
+    chart: istio/gateway
+    version: 1.20.0
+    needs:
+      - istio-system/istiod
+    wait: false
+    set:
+      - name: labels.istio
+        value: ingressgateway
+      - name: labels.app
+        value: istio-ingressgateway
+      - name: service.type
+        value: LoadBalancer
+
+  - name: kiali
+    namespace: istio-system
+    chart: kiali/kiali-server
+    version: 1.78.0
+    needs:
+      - istio-system/istiod
+    wait: true
+    values:
+      - istio/kiali-values.yaml
+
+  # Prometheus установлен отдельно для ускорения развертывания
+  # Установить вручную: helm install prometheus prometheus-community/kube-prometheus-stack -n istio-system -f istio/prometheus-values.yaml
+
+  - name: istio-config
+    namespace: muffin-services
+    createNamespace: false
+    chart: ./istio-config
+    needs:
+      - istio-system/istiod
+    values:
+      - istio-config/values.yaml
+
   - name: muffin-currency
-    namespace: default
+    namespace: muffin-services
     chart: ./muffin-currency
+    needs:
+      - istio-system/istiod
+      - muffin-services/istio-config
     values:
       - muffin-currency/values.yaml
 
   - name: muffin-wallet
-    namespace: default
+    namespace: muffin-services
     chart: ./muffin-wallet
     needs:
-      - default/muffin-currency
+      - muffin-services/muffin-currency
+      - muffin-services/istio-config
     values:
       - muffin-wallet/values.yaml
 
