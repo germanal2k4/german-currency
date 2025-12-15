@@ -1,3 +1,7 @@
+namespace:
+  create: true
+  name: muffin-services
+
 gateway:
   enabled: true
   host: wallet.example.com
@@ -11,12 +15,10 @@ virtualServices:
 serviceEntry:
   postgres:
     enabled: true
-    # Для minikube используйте IP хоста или host.minikube.internal
-    # Получить IP: minikube ssh "route -n get 0.0.0.0 | grep gateway" или "ip route | grep default"
-    host: host.minikube.internal  # Для minikube, для других кластеров может быть host.docker.internal
+    host: host.minikube.internal
     port: 5432
-    address: ""  # Можно указать IP хоста напрямую (например, 192.168.65.2 для Docker Desktop)
-    resolution: DNS  # или STATIC если указан address
+    address: ""
+    resolution: DNS
 
 peerAuthentication:
   enabled: true
@@ -30,4 +32,8 @@ destinationRules:
   wallet:
     enabled: true
   currency:
+    enabled: true
+
+prometheus:
+  serviceMonitor:
     enabled: true

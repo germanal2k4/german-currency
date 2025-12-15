@@ -12,6 +12,10 @@ meshConfig:
         - "listener_manager"
         - "server"
         - "cluster.xds-grpc"
+    tracing:
+      sampling: 100.0
+      zipkin:
+        address: jaeger-collector.istio-system.svc.cluster.local:9411
 
 pilot:
   traceSampling: 100.0

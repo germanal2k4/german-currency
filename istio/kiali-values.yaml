@@ -15,4 +15,6 @@ external_services:
   grafana:
     enabled: false
   tracing:
-    enabled: false
+    enabled: true
+    in_cluster_url: http://tracing.istio-system/jaeger
+    use_grpc: false
