@@ -68,8 +68,6 @@ configMaps:
         port: 8081
       spring:
         datasource:
-          # Для minikube используйте host.minikube.internal
-          # Для других кластеров может быть host.docker.internal или IP хоста
           url: jdbc:postgresql://host.minikube.internal:5432/muffin_wallet
           username: muffin-wallet
       currency:
