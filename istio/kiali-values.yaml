@@ -16,5 +16,5 @@ external_services:
     enabled: false
   tracing:
     enabled: true
-    in_cluster_url: in_cluster_url: http://jaeger-query.istio-system:16686
+    in_cluster_url: http://jaeger-query.istio-system:16686
     use_grpc: false

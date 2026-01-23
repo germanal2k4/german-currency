@@ -37,3 +37,10 @@ destinationRules:
 prometheus:
   serviceMonitor:
     enabled: true
+
+thanos:
+  enabled: true
+  bucket: thanos
+  endpoint: host.minikube.internal:9000
+  accessKey: minio
+  secretKey: minio123

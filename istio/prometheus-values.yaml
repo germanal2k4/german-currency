@@ -1,11 +1,32 @@
 prometheus:
   prometheusSpec:
     retention: 30d
+    retentionSize: "5GB"
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
     ruleSelectorNilUsesHelmValues: false
     scrapeInterval: 15s
     evaluationInterval: 15s
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+    thanos:
+      image: quay.io/thanos/thanos:v0.34.1
+      objectStorageConfig:
+        existingSecret:
+          name: thanos-objstore-config
+          key: objstore.yml
+    
+    additionalScrapeConfigs:
+      - job_name: 'postgres-exporter'
+        static_configs:
+          - targets: ['host.minikube.internal:9187']
+        metrics_path: /metrics
+        scrape_interval: 15s
     resources:
       requests:
         memory: 2Gi

@@ -1,0 +1,15 @@
+{{- if .Values.prometheus.serviceMonitor.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: muffin-wallet-prometheus
+  namespace: muffin-services
+spec:
+  host: muffin-wallet.muffin-services.svc.cluster.local
+  trafficPolicy:
+    portLevelSettings:
+      - port:
+          number: 8081
+        tls:
+          mode: DISABLE
+{{- end }}
