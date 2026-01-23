@@ -137,6 +137,8 @@ kubectl -n istio-system logs prometheus-prometheus-kube-prometheus-prometheus-0 
 
 docker exec muffin-minio mc ls local/thanos/ --recursive
 
+docker exec muffin-minio mc cat local/thanos/номербакета/meta.json | jq чтобы чекнуть есть ли логи или нет 
+
 kubectl -n istio-system get pvc
 ```
 
