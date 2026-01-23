@@ -14,6 +14,11 @@
 ```bash
 docker compose up -d
 ```
+поменяйте свой айпи по подсказке в файле prometheus values по подсказке команда
+
+```bash
+minikube ssh "getent hosts host.minikube.internal" | awk '{print $1}'
+```
 
 ## Шаг 2: Запуск Minikube
 
@@ -117,6 +122,10 @@ histogram_quantile(0.99, sum(rate(istio_request_duration_milliseconds_bucket{des
 
 ```promql
 sum(pg_stat_activity_count{datname="muffin_wallet"})
+```
+
+```promql
+hikaricp_connections
 ```
 
 ---
