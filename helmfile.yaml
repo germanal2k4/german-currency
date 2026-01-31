@@ -7,6 +7,8 @@ repositories:
     url: https://kiali.org/helm-charts
   - name: jaegertracing
     url: https://jaegertracing.github.io/helm-charts
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
 
 releases:
   - name: istio-base
@@ -47,7 +49,7 @@ releases:
     version: 1.78.0
     needs:
       - istio-system/istiod
-    wait: true
+    wait: false
     values:
       - istio/kiali-values.yaml
 
@@ -56,14 +58,34 @@ releases:
     chart: prometheus-community/kube-prometheus-stack
     needs:
       - istio-system/istiod
-    wait: true
+    wait: false
     values:
       - istio/prometheus-values.yaml
 
   - name: jaeger
     namespace: istio-system
     chart: jaegertracing/jaeger
-    wait: true
+    wait: false
+
+  - name: loki
+    namespace: istio-system
+    createNamespace: false
+    chart: grafana/loki
+    needs:
+      - istio-system/istiod
+    wait: false
+    values:
+      - istio/loki-values.yaml
+
+  - name: promtail
+    namespace: istio-system
+    createNamespace: false
+    chart: grafana/promtail
+    needs:
+      - istio-system/loki
+    wait: false
+    values:
+      - istio/promtail-values.yaml
 
   - name: istio-config
     namespace: muffin-services
@@ -71,6 +93,7 @@ releases:
     chart: ./istio-config
     needs:
       - istio-system/istiod
+      - istio-system/prometheus
     values:
       - istio-config/values.yaml
 

@@ -18,6 +18,11 @@ spec:
       containers:
       - name: {{ .Values.appLabel }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        env:
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
         ports:
         - containerPort: {{ (index .Values.containerPorts 0).port }}
         {{ include "muffin-currency.liveness" . | nindent 8 }}

@@ -21,3 +21,5 @@
 .idea/
 *.tmproj
 .vscode/
+# Application source and binary — chart uses pre-built image only
+muffin-currency/

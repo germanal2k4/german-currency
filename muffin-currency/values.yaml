@@ -1,7 +1,9 @@
-# Values for muffin-currency chart
 replicaCount: 1
 
 version: v1
+
+env:
+  ZIPKIN_ENDPOINT: "http://jaeger.istio-system.svc.cluster.local:9411/api/v2/spans"
 
 image:
   repository: aadan1lov/muffin-currency

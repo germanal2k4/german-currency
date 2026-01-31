@@ -36,7 +36,19 @@ prometheus:
         cpu: 2000m
 
 grafana:
-  enabled: false
+  enabled: true
+  adminPassword: admin
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki-gateway.istio-system.svc.cluster.local
+      isDefault: false
+    - name: Jaeger
+      type: jaeger
+      access: proxy
+      url: http://jaeger.istio-system.svc.cluster.local:16686
+      isDefault: false
 
 alertmanager:
   enabled: false

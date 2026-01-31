@@ -9,8 +9,8 @@ serviceAccount:
 
 image:
   repository: aadan1lov/muffin-wallet
-  tag: "1.1.0"
-  pullPolicy: Always
+  tag: "1.2.0"
+  pullPolicy: IfNotPresent
 
 containerPort: 8081
 
@@ -83,6 +83,14 @@ configMaps:
             probes:
               enabled: true
             show-details: always
+        zipkin:
+          tracing:
+            endpoint: http://jaeger.istio-system.svc.cluster.local:9411/api/v2/spans
+        tracing:
+          sampling:
+            probability: 1.0
+          propagation:
+            type: B3
 
 ingress:
   enabled: true
