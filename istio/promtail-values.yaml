@@ -9,9 +9,9 @@ config:
           selector: '{namespace="muffin-services"}'
           stages:
             - regex:
-                expression: '\[(?P<trace_id>[a-f0-9]{16,32})-[a-f0-9]+\]'
+                expression: '\[(?P<traceId>[a-f0-9]{16,32})-[a-f0-9]+\]'
             - labels:
-                trace_id:
+                traceId:
             - regex:
                 expression: '(?P<logLevel>INFO|ERROR|WARN|DEBUG)'
             - labels:
